@@ -88,11 +88,9 @@ object LzList {
   }
 }
 
-
 object LzListPlayground {
 
   def main(args: Array[String]): Unit = {
     val naturals = LzList.generate(1)(n => n + 1) // infinite natural nums
   }
-
 }
