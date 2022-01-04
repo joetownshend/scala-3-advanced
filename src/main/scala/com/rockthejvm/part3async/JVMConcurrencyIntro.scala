@@ -6,25 +6,21 @@ object JVMConcurrencyIntro {
 
   def basicThreads(): Unit = {
     val runnable = new Runnable {
-      override def run(): Unit = {
-        println("waiting...")
-        Thread.sleep(2000)
-        println("running on some thread")
-      }
+      override def run(): Unit = println("running on some thread")
     }
 
-    // threads on the JVM
+    // threads on JVM are denoted by Thread data type
     val aThread = new Thread(runnable)
-    aThread.start() // will run the runnable on some JVM thread
-    // JVM thread == OS thread (soon to change via Project Loom)
+    aThread.start() // runs runnable on some JVM thread
+    // JVM thread == OS thread (soon to change via project Loom)
     aThread.join() // block until thread finishes
   }
 
   // order of operations is NOT guaranteed
-  // different runs = different results!
-  def orderOfExecution(): Unit = {
-    val threadHello = new Thread(() => (1 to 100).foreach(_ => println("hello")))
-    val threadGoodbye = new Thread(() => (1 to 100).foreach(_ => println("goodbye")))
+  def OrderOfOperations(): Unit = {
+    val threadHello = new Thread(() => (1 to 5).foreach(_ => println("hello")))
+    val threadGoodbye = new Thread(() => (1 to 5).foreach(_ => println("goodbye")))
+
     threadHello.start()
     threadGoodbye.start()
   }
@@ -33,25 +29,13 @@ object JVMConcurrencyIntro {
   def demoExecutors(): Unit = {
     val threadPool = Executors.newFixedThreadPool(4)
     // submit a computation
-    threadPool.execute(() => println("something in the thread pool"))
-
-    threadPool.execute { () =>
-      Thread.sleep(1000)
-      println("done after one second")
-    }
-
-    threadPool.execute { () =>
-      Thread.sleep(1000)
-      println("almost done")
-      Thread.sleep(1000)
-      println("done after 2 seconds")
-    }
-
+    threadPool.execute(() => println("Something in the thread pool"))
+    // close computation
     threadPool.shutdown()
-    // threadPool.execute(() => println("this should NOT apeear")) // should throw an exception in the calling thread
   }
 
+
   def main(args: Array[String]): Unit = {
-    demoExecutors()
+    OrderOfOperations()
   }
 }
